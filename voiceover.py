@@ -1,4 +1,4 @@
-import pyttsx3
+from TTS.api import TTS
 import shutil
 import pathlib
 
@@ -6,25 +6,9 @@ import pathlib
 
 ID = 1223124242
 
-filename = str(ID) + ".mp3"
-engine = pyttsx3.init()
+model_name = "tts_models/en/ek1/tacotron2"
 
-def change_voice(engine, language, gender='VoiceGenderFemale'):
-    for voice in engine.getProperty('voices'):
-        if language in voice.languages and gender == voice.gender:
-            engine.setProperty('voice', voice.id)
-            return True
+filename = "Voiceovers/" + str(ID) + ".wav"
 
-    raise RuntimeError("Language '{}' for gender '{}' not found".format(language, gender))
-
-
-def generate_voiceover(textt, save_loc):
-
-    engine.say(textt)
-    engine.save_to_file(save_loc, filename)
-    engine.runAndWait()
-
-
-change_voice(engine, "en_US", "VoiceGenderFemale")
-
-generate_voiceover("Which comedy movie has the greatest laughs-per-second ratio ever?", "voiceovers")
+tts = TTS(model_name, progress_bar=True)
+tts.tts_with_vc_to_file(text="What movie traumatized you as a kid?", file_path="output.wav")
