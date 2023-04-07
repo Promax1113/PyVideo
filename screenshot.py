@@ -30,5 +30,3 @@ def get_scr(url, filename):
     # Close the browser
     driver.quit()
 
-get_scr('https://www.reddit.com/r/AskReddit/comments/12dmbbk/who_is_the_worst_kind_of_person_to_be_sat_next_to/', "reddit")
-
