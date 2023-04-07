@@ -1,7 +1,6 @@
 import praw
 from TTS.api import TTS
 import os
-
 import screenshot
 import videomakertest
 
@@ -47,5 +46,5 @@ for submission in reddit.subreddit("AskReddit").top(time_filter="week", limit=3)
                             file_path=f"voice//comments/{submission.id}_{i}.wav")
             comments.append(i.body)
 
-for ID in IDs:
-    videomakertest.make_movie(ID)
+# for ID in IDs:
+#     videomakertest.make_movie(ID)
