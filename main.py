@@ -3,7 +3,7 @@ from TTS.api import TTS
 import os
 
 import screenshot
-import videobuilder
+import videomakertest
 
 appID = "vbTMLYxH0FzpJJvkhX51gA"
 appSecret = "N4WeNyrnvKfSFW0tEAGyBGoA68s_nw"
@@ -33,7 +33,7 @@ for submission in reddit.subreddit("AskReddit").top(time_filter="week", limit=3)
             continue
         else:
             currentUrl = baseUrl + submission.permalink
-            print(currentUrl)
+            print(f"Link: {currentUrl}")
             screenshot.get_scr(currentUrl, submission.id)
             tts.tts_to_file(text=submission.title, speaker=tts.speakers[4], language=tts.languages[0],
                             file_path=f"voice/{submission.id}.wav")
@@ -47,5 +47,5 @@ for submission in reddit.subreddit("AskReddit").top(time_filter="week", limit=3)
                             file_path=f"voice//comments/{submission.id}_{i}.wav")
             comments.append(i.body)
 
-# for video in range(2):
-#     videobuilder.movie(scr)
+for ID in IDs:
+    videomakertest.make_movie(ID)
