@@ -51,12 +51,12 @@ def make_movie(ID, comment_ID):
     # comment3_scr = ImageClip(f"scr/comments/{ID}_{comment_ID}").set_duration(audio_lengths[3])
     aud = AudioFileClip(f"voice/merged_audios/{ID}.wav")
     audios = CompositeAudioClip([aud])
-    video_comp = CompositeVideoClip([cropped_video.set_position("center"), title_scr.set_position("center")]).set_fps(
+    video_comp = CompositeVideoClip([cropped_video.set_position("center"), title_scr.set_position("center").resize(0.6)]).set_fps(
         30)
     video_comp.audio = audios
     video_comp.write_videofile(f"videos/resize_videos/{ID}.mp4")
 
-    music_file = AudioFileClip("bgm.mp3").fx(afx.volumex, 0.1)
+    music_file = AudioFileClip("bgm.mp3").subclip(0, total + 2).fx(afx.volumex, 0.07)
     vid = VideoFileClip(f"videos/resize_videos/{ID}.mp4").set_fps(30)
     music = CompositeAudioClip([music_file, vid.audio])
     video_res = CompositeVideoClip([vid.resize(width=720, height=1280)])
