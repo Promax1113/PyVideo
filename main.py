@@ -4,10 +4,11 @@ import os
 import screenshot
 import videomakertest
 import discord
-import idSaver
+from idSaver import *
 
 web = discord.SyncWebhook.from_url("https://discord.com/api/webhooks/1093996610033295501" +
                                    "/oAIcATKPu7Q_9DhY47slY7_WhRevvJM_WfIHZL3y_wJ-bc6uuIhFn3DwjIc2SjWcorU7")
+subreddit_name = "AskReddit"
 
 appID = "vbTMLYxH0FzpJJvkhX51gA"
 appSecret = "N4WeNyrnvKfSFW0tEAGyBGoA68s_nw"
@@ -17,38 +18,48 @@ titles = []
 IDs = []
 commentIDs = []
 URLs = []
-baseUrl = "https://www.reddit.com"
+baseUrl = "https://old.reddit.com"
 model_name = TTS.list_models()[0]
 tts = TTS(model_name)
 reddit = praw.Reddit(client_id=appID, client_secret=appSecret, user_agent=userAgent)
 screenshots_dir = "scr"
+tries = 0
 screen_width, screen_height = 400, 800
 
-for submission in reddit.subreddit("AskReddit").top(time_filter="week", limit=3):
+submissions = reddit.subreddit(subreddit_name).top(time_filter="week", limit=3)
+
+for submission in submissions:
     if submission.over_18:
         print("Submission was 18+")
         continue
     else:
+        tries += 1
         submission.comment_sort = 'best'
         top_comments = submission.comments[:3]
         print(submission.title)
         titles.append(submission.title)
 
-        if f"{submission.id}.wav" in os.listdir("voice"):
-            print("File already exists.")
-            break
-        else:
-            IDs.append(submission.id)
-            currentUrl = baseUrl + submission.permalink
-            print(f"Link: {currentUrl}")
-            URLs.append(currentUrl)
-            screenshot.get_post_scr(currentUrl, submission.id)
-            tts.tts_to_file(text=submission.title, speaker=tts.speakers[4], language=tts.languages[0],
-                            file_path=f"voice/{submission.id}.wav")
+        # if submission.id == read_id(submission.id)[0]:
+        #     print(f"{read_id(submission.id)[1]} is already in file list.")
+        #     submissions.append(reddit.subreddit(subreddit_name).top(time_filter="week", limit=4)[tries + 1])
 
-        for comment in top_comments:
-            currentComment = comment.body
-            commentIDs.append(comment.id)
+        # else:
+        IDs.append(submission.id)
+        # save_id(submission.id, submission.title)
+        currentUrl = baseUrl + submission.permalink
+        print(f"Link: {currentUrl}")
+        URLs.append(currentUrl)
+        screenshot.get_post_scr(currentUrl, submission.id)
+        tts.tts_to_file(text=submission.title, speaker=tts.speakers[4], language=tts.languages[0],
+                        file_path=f"voice/{submission.id}.wav")
+
+    for comment in top_comments:
+        currentComment = comment.body
+        commentIDs.append(comment.id)
+        if len(currentComment) > 500:
+            print("Comment was more than 500 chars. Skipping...")
+            pass
+        else:
             if "$" in comment.body:
                 currentComment = currentComment.replace("$", "dollar")
             tts.tts_to_file(text=currentComment, speaker=tts.speakers[4], language=tts.languages[0],

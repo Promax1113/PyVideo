@@ -20,9 +20,9 @@ def get_post_scr(url, filename):
 
     # Navigate to the Reddit post
     driver.get(url)
-    time.sleep(4)
+    time.sleep(2)
     # Find the title element and take a screenshot of it
-    title_element = driver.find_element(By.CLASS_NAME, "_eYtD2XCVieq6emjKBH3m")
+    title_element = driver.find_element(By.CSS_SELECTOR, F"#thing_t3_{filename} > div.entry.unvoted > div > p.title > a")
     screenshot = title_element.screenshot_as_png
 
     # Save the screenshot as an image file
@@ -40,7 +40,7 @@ def get_comment_screenshot(url, post_id):
     del_cookies = False
     iterations = 0
     chrome_options = Options()
-    # chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--headless')
     chrome_options.add_argument('--disable-gpu')
 
     # Launch the Chrome browser in headless mode
@@ -56,7 +56,7 @@ def get_comment_screenshot(url, post_id):
         pass
     comments = driver.find_elements(By.CLASS_NAME, "_1qeIAgB0cPwnLhDF9XSiJM")
     for comment in comments:
-        if iterations >= 3:
+        if iterations <= 3:
             break
         # Find the comment element and take a screenshot of it But still waiting for cookie banner animation to end.
         time.sleep(1)

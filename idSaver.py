@@ -1,4 +1,5 @@
 import csv
+import time
 
 
 def save_id(ID, title):
@@ -10,15 +11,23 @@ def save_id(ID, title):
 
 
 def read_id(ID):
-    sID = str(ID)
+    row_id = 0
+    row_title = "null"
+
+    s_id = str(ID)
     f = open("ids.csv", "r")
     reader = csv.reader(f)
 
     for row in reader:
-        if ID in row[0]:
-            print(row)
+        if s_id in row[0]:
+            row_id = row[0]
+            row_title = row[1]
+            time.sleep(2)
 
-    f.close
+
+    f.close()
+
+    return row_id, row_title
 
 
-read_id(69)
+

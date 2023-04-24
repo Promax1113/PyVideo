@@ -1,10 +1,13 @@
 import random
+from moviepy.video.fx.all import crop
+import moviepy.video.fx.resize
 import sox
 from moviepy.editor import *
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
 import moviepy.video.fx.all as fx
 from moviepy.audio.fx.all import *
+from moviepy.audio.fx.volumex import volumex
 
 
 
@@ -38,12 +41,6 @@ def make_movie(ID, comment_ID):
     vid_part = random.randint(11, 540)
     concatenate_audio_moviepy(audios, f"voice/merged_audios/{ID}")
     vid = VideoFileClip("bg.mp4").subclip(vid_part, vid_part + total + 2)
-    aspect_ratio = 9 / 16
-    new_height = int(vid.w * aspect_ratio)
-    y_top = int((vid.h - new_height) / 2)
-    y_bottom = y_top + new_height
-    crop_rectangle = (0, y_top, vid.w, y_bottom)
-    cropped_video = vid.crop(*crop_rectangle)
     title_scr = ImageClip(f"scr/{ID}.png").set_duration(audio_lengths[0])
 
     # comment1_scr = ImageClip(f"scr/comments/{ID}_{comment_ID}").set_duration(audio_lengths[1])
@@ -51,14 +48,25 @@ def make_movie(ID, comment_ID):
     # comment3_scr = ImageClip(f"scr/comments/{ID}_{comment_ID}").set_duration(audio_lengths[3])
     aud = AudioFileClip(f"voice/merged_audios/{ID}.wav")
     audios = CompositeAudioClip([aud])
-    video_comp = CompositeVideoClip([cropped_video.set_position("center"), title_scr.set_position("center").resize(0.6)]).set_fps(
+    video_comp = CompositeVideoClip([vid.set_position("center"), title_scr.set_position("center").resize(0.8)]).set_fps(
         30)
     video_comp.audio = audios
     video_comp.write_videofile(f"videos/resize_videos/{ID}.mp4")
 
-    music_file = AudioFileClip("bgm.mp3").subclip(0, total + 2).fx(afx.volumex, 0.07)
+    music_file = AudioFileClip("bgm.mp3").subclip(0, total + 2).fx(volumex, 0.07)
     vid = VideoFileClip(f"videos/resize_videos/{ID}.mp4").set_fps(30)
     music = CompositeAudioClip([music_file, vid.audio])
-    video_res = CompositeVideoClip([vid.resize(width=720, height=1280)])
+    video_res = moviepy.video.fx.resize.resize(vid, height=720, width=405)
     video_res.audio = music
-    video_res.write_videofile(f"videos/final_videos/{ID}_final.mp4")
+    video_res.write_videofile(f"videos/final_videos/{ID}.mp4")
+
+    clip = VideoFileClip(f"videos/final_videos/{ID}.mp4")
+    (w, h) = clip.size
+
+    crop_width = h * 9 / 16
+    # x1,y1 is the top left corner, and x2, y2 is the lower right corner of the cropped area.
+
+    x1, x2 = (w - crop_width) // 2, (w + crop_width) // 2
+    y1, y2 = 0, h
+    cropped_clip = crop(clip, x1=x1, y1=y1, x2=x2, y2=y2)
+    cropped_clip.write_videofile(f"videos/{ID}.mp4")
