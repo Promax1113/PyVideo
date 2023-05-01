@@ -10,9 +10,9 @@ web = discord.SyncWebhook.from_url("https://discord.com/api/webhooks/10939966100
                                    "/oAIcATKPu7Q_9DhY47slY7_WhRevvJM_WfIHZL3y_wJ-bc6uuIhFn3DwjIc2SjWcorU7")
 subreddit_name = "AskReddit"
 
-appID = "vbTMLYxH0FzpJJvkhX51gA"
-appSecret = "N4WeNyrnvKfSFW0tEAGyBGoA68s_nw"
-userAgent = "Scraper"
+appID = "Insert Your App ID"
+appSecret = "Insert Your Secret"
+userAgent = "Insert Your UserAgent"
 comments = []
 titles = []
 IDs = []
